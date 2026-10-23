@@ -1,0 +1,68 @@
+ALGORITMO OrganizadorDeHorarios
+
+    ESCREVER menu: (1) dados do enunciado, (2) digitar dados
+    LER opcao
+
+    SE opcao = 1:
+        dados ← dados do enunciado
+    SENÃO:
+        LER horários, salas, disciplinas, disponibilidades e bloqueios
+        (validar cada informação digitada)
+
+    ResolverGrade(dados)
+
+    SE opcao = 2:
+        PERGUNTAR se quer um cenário restrito
+        SE sim:
+            LER professor e novos horários disponíveis
+            ResolverGrade(dados com a disponibilidade alterada)
+    SENÃO:
+        ResolverGrade(dados com Ana disponível só em H1 e H2)
+
+
+FUNÇÃO ResolverGrade(dados)
+
+    Criar a lista de aulas pendentes (cada disciplina gera uma aula por unidade de "aulas")
+    grade ← lista vazia
+    combinacoes_testadas ← 0
+    alocacoes ← 0
+    retrocessos ← 0
+
+    FUNÇÃO Backtracking(aulas_pendentes)
+
+        SE não existirem aulas pendentes:
+            RETORNAR SUCESSO
+
+        Para cada aula pendente, gerar as combinações válidas de horário e sala
+        (professor disponível e livre, disciplina sem outra aula no mesmo horário,
+         sala livre e não bloqueada, laboratório quando exigido)
+
+        Escolher a aula com MENOS combinações válidas (MRV)
+
+        SE essa aula não tiver nenhuma combinação válida:
+            RETORNAR FALHA
+
+        PARA CADA combinação válida da aula escolhida:
+            combinacoes_testadas ← combinacoes_testadas + 1
+
+            Adicionar a combinação à grade
+            alocacoes ← alocacoes + 1
+
+            SE Backtracking(aulas restantes) retornar SUCESSO:
+                RETORNAR SUCESSO
+
+            Remover a combinação da grade       // <<< RETROCESSO: desfaz a escolha
+            retrocessos ← retrocessos + 1
+
+        RETORNAR FALHA
+
+    FIM DA FUNÇÃO
+
+    SE Backtracking(todas as aulas) retornar SUCESSO:
+        Exibir a grade (disciplina, professor, horário e sala)
+    SENÃO:
+        Exibir "Não existe uma grade válida para estes dados"
+
+    Exibir combinacoes_testadas, alocacoes e retrocessos
+
+FIM DA FUNÇÃO
